@@ -7,20 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using TestRatingSystem.Models;
+using TestRatingSystem.ViewModels;
 
 namespace TestRatingSystem.Controllers {
 	[ApiController]
 	[Route("User/[action]")]
 	public class UserController : ControllerBase {
 
-		UsersContext db;
-		public UserController(UsersContext context) {
+		SubmissionsContext db;
+		public UserController(SubmissionsContext context) {
 			db = context;
-			if (!db.Users.Any()) {
-				db.Users.Add(new User {
-					Grade = 10,
+			if (!db.Submissions.Any()) {
+				db.Submissions.Add(new Submission {
+					Grade = new Grade(),
 					Email = "email@gmail.com",
-					FullName = "Peter Griffin",
+					Name = "Peter",
+					Surname = "Griffin",
+					FathersName = "Bob",
 					GitHubLink = "github.com/microsoft",
 					PhoneNumber = "911"
 				});
@@ -29,13 +32,14 @@ namespace TestRatingSystem.Controllers {
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Add(User user) {
-			if (user == null) {
+		public async Task<IActionResult> Add(SubmissionPost submissionPost) {
+			if (submissionPost == null) {
 				return BadRequest();
 			}
-			db.Users.Add(user);
+			Submission submission = new(submissionPost);
+			db.Submissions.Add(submission);
 			await db.SaveChangesAsync();
-			return Ok(user);
+			return Ok();
 		}
 	}
 }

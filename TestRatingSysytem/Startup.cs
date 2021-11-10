@@ -31,7 +31,7 @@ namespace TestRatingSystem {
 		public void ConfigureServices(IServiceCollection services) {
 			string con = "Server=(localdb)\\mssqllocaldb;Database=usersdbstore;Trusted_Connection=True;";
 			// устанавливаем контекст данных
-			services.AddDbContext<UsersContext>(options => options.UseSqlServer(con));
+			services.AddDbContext<SubmissionsContext>(options => options.UseSqlServer(con));
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					.AddJwtBearer(options => {
 						options.RequireHttpsMetadata = false;
@@ -55,6 +55,7 @@ namespace TestRatingSystem {
 						};
 					});
 			services.AddSwaggerGen();
+			services.AddSwaggerDocument();
 			services.AddControllers();
 		}
 
@@ -65,7 +66,8 @@ namespace TestRatingSystem {
 			}
 
 			//app.UseHttpsRedirection();
-			app.UseSwagger();
+			app.UseOpenApi();
+			app.UseSwaggerUi3();
 
 			app.UseRouting();
 
