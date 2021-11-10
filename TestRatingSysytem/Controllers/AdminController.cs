@@ -12,7 +12,7 @@ using TestRatingSystem.Models;
 using TestRatingSystem.ViewModels;
 
 namespace TestRatingSystem.Controllers {
-	//[Authorize]
+	[Authorize]
 	[Route("Admin/[action]")]
 	[ApiController]
 	public class AdminController : ControllerBase {
