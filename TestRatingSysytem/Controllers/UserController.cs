@@ -17,18 +17,6 @@ namespace TestRatingSystem.Controllers {
 		SubmissionsContext db;
 		public UserController(SubmissionsContext context) {
 			db = context;
-			if (!db.Submissions.Any()) {
-				db.Submissions.Add(new Submission {
-					Grade = new Grade(),
-					Email = "email@gmail.com",
-					Name = "Peter",
-					Surname = "Griffin",
-					FathersName = "Bob",
-					GitHubLink = "github.com/microsoft",
-					PhoneNumber = "911"
-				});
-				db.SaveChanges();
-			}
 		}
 
 		[HttpPost]
@@ -37,6 +25,7 @@ namespace TestRatingSystem.Controllers {
 				return BadRequest();
 			}
 			Submission submission = new(submissionPost);
+			submission.Feedback.Criterions = db.TestCriterionInfos.Select(criterion => new TestCriterion(criterion)).ToList();
 			db.Submissions.Add(submission);
 			await db.SaveChangesAsync();
 			return Ok();

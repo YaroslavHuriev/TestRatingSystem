@@ -8,9 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TestRatingSystem.Models {
 	public class Grade {
+		private int value;
 		public int Id { get; set; }
 		public int SubmissionId { get; set; }
-		public int Value { get; set; }
+		public int Value { 
+			get {
+				if (IsSet) {
+					return value;
+				}
+				else return -1;
+			}
+			set {
+				IsSet = true;
+				this.value = value;
+			}
+		}
 		public bool IsSet { get; set; }
 
 		public Grade(int value, bool isSet) {

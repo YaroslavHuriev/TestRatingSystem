@@ -50,6 +50,7 @@ namespace TestRatingSystem.Models {
 			Grade = new Grade();
 			State = SubmissionStates.New;
 			Notes = submissionPost.Notes;
+			Feedback = new AdminsTestFeedback();
 		}
 	}
 }

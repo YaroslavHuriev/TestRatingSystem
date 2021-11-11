@@ -30,32 +30,39 @@ namespace TestRatingSystem.Controllers {
 			.Include(submission => submission.Feedback)
 				.ThenInclude(feedback => feedback.Criterions)
 			.ToArray());
-			return new JsonResult(submissions);
+			IEnumerable<SubmissionAdminGetAllSubmissions> submissionsForView = submissions.Select(submission => new SubmissionAdminGetAllSubmissions {
+				Email = submission.Email,
+				FathersName = submission.FathersName,
+				GitHubLink = submission.GitHubLink,
+				Grade = submission.Grade.Value,
+				Name = submission.Name,
+				Notes = submission.Notes,
+				PhoneNumber = submission.PhoneNumber,
+				State = submission.State,
+				SubmissionId = submission.Id,
+				Surname = submission.Surname
+			});
+			return new JsonResult(submissionsForView);
 		}
 
 		[HttpPut]
-		public async Task<IActionResult> Review(AdminsTestFeedback feedback, int submissionId) {
-			//Submission submission = db.Submissions.Find(submissionId);
+		public async Task<IActionResult> Review(List<TestCriterionAdminReviewPut> criterions, int submissionId) {
 			Submission[] submissions = db.Submissions
 				.Include(submission => submission.Grade)
 				.Include(submission => submission.Feedback)
 					.ThenInclude(feedback => feedback.Criterions)
 				.ToArray();
 			Submission submission = submissions.FirstOrDefault(submission => submission.Id == submissionId);
-			if (submission == null || feedback.Criterions.Count != db.TestCriterionInfos.Count()) {
+			if (submission == null || criterions.Count != db.TestCriterionInfos.Count()) {
 				return BadRequest();
 			}
 			else if (submission.State == Submission.SubmissionStates.New) {
 				submission.State = Submission.SubmissionStates.Resolved;
-				submission.Grade = new Grade(feedback.Criterions.Count(criterion => criterion.IsDone), true);
-				submission.Feedback = feedback;
 			}
-			else if (submission.State == Submission.SubmissionStates.Resolved) {
-				submission.Grade.Value = feedback.Criterions.Count(criterion => criterion.IsDone);
-				for (int i = 0; i < db.TestCriterionInfos.Count(); i++) {
-					TestCriterion criterion = feedback.Criterions.FirstOrDefault(criterion => criterion.Id == submission.Feedback.Criterions[i].Id);
-					submission.Feedback.Criterions[i].IsDone = criterion.IsDone;
-				}
+			submission.Grade.Value = criterions.Count(criterion => criterion.IsDone);
+			for (int i = 0; i < db.TestCriterionInfos.Count(); i++) {
+				TestCriterionAdminReviewPut criterion = criterions.FirstOrDefault(criterion => criterion.Id == submission.Feedback.Criterions[i].Id);
+				submission.Feedback.Criterions[i].IsDone = criterion.IsDone;
 			}
 			db.Update(submission);
 			await db.SaveChangesAsync();
@@ -71,14 +78,29 @@ namespace TestRatingSystem.Controllers {
 				.ThenInclude(feedback => feedback.Criterions)
 			.ToArray());
 			Submission submission = submissions.FirstOrDefault(submission => submission.Id == submissionId);
-			if (submission.State == Submission.SubmissionStates.New) {
-				submission.Feedback = new AdminsTestFeedback{
-					Criterions = db.TestCriterionInfos
-					.Select(info => new TestCriterion(info))
+			SubmissionAdminReviewGet submissionAdminReview = new SubmissionAdminReviewGet {
+				Id = submission.Id,
+				Email = submission.Email,
+				Feedback = new FeedbackAdminReviewGet {
+					Id = submission.Feedback.Id,
+					SubmissionId = submission.Id,
+					Criterions = submission.Feedback.Criterions.Select(criterion =>
+					new TestCriterionAdminReviewGet {
+						Id = criterion.Id,
+						Description = criterion.Description,
+						IsDone = criterion.IsDone,
+						Group = criterion.Group,
+						AdminsTestFeedbackId = criterion.AdminsTestFeedbackId
+					})
 					.ToList()
-				};
-			}
-			return new JsonResult(submission);
+				},
+				FathersName = submission.FathersName,
+				GitHubLink = submission.GitHubLink,
+				Grade = submission.Grade.Value,
+				Name = submission.Name,
+				Surname = submission.Surname
+			};
+			return new JsonResult(submissionAdminReview);
 		}
 	}
 }

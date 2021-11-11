@@ -55,6 +55,7 @@ namespace TestRatingSystem {
 						};
 					});
 			services.AddSwaggerGen();
+			services.AddCors();
 			services.AddSwaggerDocument();
 			services.AddControllers();
 		}
@@ -68,7 +69,11 @@ namespace TestRatingSystem {
 			//app.UseHttpsRedirection();
 			app.UseOpenApi();
 			app.UseSwaggerUi3();
-
+			app.UseCors(x => x
+					.AllowAnyMethod()
+					.AllowAnyHeader()
+					.SetIsOriginAllowed(origin => true)
+					.AllowCredentials());
 			app.UseRouting();
 
 			app.UseAuthentication();
