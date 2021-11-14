@@ -72,7 +72,7 @@ namespace TestRatingSystem {
 			app.UseCors(x => x
 					.AllowAnyMethod()
 					.AllowAnyHeader()
-					.SetIsOriginAllowed(origin => true)
+					.SetIsOriginAllowed(origin => true)//
 					.AllowCredentials());
 			app.UseRouting();
 

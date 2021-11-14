@@ -10,7 +10,7 @@ namespace TestRatingSystem.Models {
 	public class AdminsTestFeedback {
 		public int Id { get; set; }
 		public int SubmissionId { get; set; }
-		public List<TestCriterion> Criterions { get; set; }
+		public List<TestCriterion> Criteria { get; set; }
 
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace TestRatingSystem.Models {
 	public class TestCriterionInfo {
 		public int Id { get; set; }
-		public string Description { get; set; }
+		public string Title { get; set; }
 		public string Group { get; set; }
 		public bool IsVisibleForUser { get; set; }
 	}

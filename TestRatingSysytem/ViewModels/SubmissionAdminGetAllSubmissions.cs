@@ -16,11 +16,9 @@ namespace TestRatingSystem.ViewModels {
 		public string FathersName { get; set; }
 		public string PhoneNumber { get; set; }
 		public string Email { get; set; }
-		public string GitHubLink { get; set; }
+		public string GitHubURL { get; set; }
 		public string Notes { get; set; }
 		public Submission.SubmissionStates State { get; set; }
 		public int Grade { get; set; }
-
-		public SubmissionAdminGetAllSubmissions() { }
 	}
 }
