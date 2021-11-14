@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using TestRatingSystem.ViewModels;
@@ -18,6 +19,7 @@ namespace TestRatingSystem.Models {
 		public string Email { get; set; }
 		public string GitHubURL { get; set; }
 		public string Notes { get; set; }
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public SubmissionStates State { get; set; }
 		public enum SubmissionStates {
 			New,
